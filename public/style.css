@@ -1,70 +1,83 @@
-/* Base styles */
-#chatScreen {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-}
-#chat-header {
-  flex-shrink: 0;
-}
-#messages {
-  flex-grow: 1;
-  overflow-y: auto;
-}
-#chat-input-container {
-  flex-shrink: 0;
-}
+      /* Base styles */
+      #chatScreen {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+      }
+      #chat-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        flex-shrink: 0;
+     }
+     #messages {
+       flex-grow: 1;
+       overflow-y: auto;
+     }
+     #chat-input-container {
+       flex-shrink: 0;
+     }
+     
+     /* Sent and Received message bubbles */
+     .sent-message {
+       background: linear-gradient(to right, #8A5A44, #6B4226);
+     }
+     
+     .received-message {
+       background: linear-gradient(to right, #F2E8CF, #D4C8A1);
+       color: #000;
+     }
+     
+     #sendBtn {
+         background: linear-gradient(to right, #8A5A44, #6B4226);
+     }
 
-/* Sent and Received message bubbles */
-.sent-message {
-  background: linear-gradient(to right, #8A5A44, #6B4226);
-}
+     #createRoomBtn {
+        background: linear-gradient(to right, #8A5A44, #6B4226);
+        color: white;
+     }
 
-.received-message {
-  background: linear-gradient(to right, #F2E8CF, #D4C8A1);
-  color: #000;
-}
-
-#sendBtn {
-    background: linear-gradient(to right, #8A5A44, #6B4226);
-}
-
-
-/* Mobile-first styles for header and buttons */
-.chat-title-logo {
-    display: block;
-}
-.chat-title-text {
-    display: none;
-}
-
-#killRoomBtn .full-text,
-#leaveBtn .full-text {
-  display: none;
-}
-
-#killRoomBtn .short-text,
-#leaveBtn .short-text {
-  display: inline;
-}
-
-/* Desktop styles */
-@media (min-width: 768px) {
-  .chat-title-logo {
-    display: none;
-  }
-  .chat-title-text {
-    display: block;
-  }
-
-  #killRoomBtn .full-text,
-  #leaveBtn .full-text {
-    display: inline;
-  }
-
-  #killRoomBtn .short-text,
-  #leaveBtn .short-text {
-    display: none;
-  }
-}
+     #joinRoomBtn {
+        background-color: white;
+        color: black;
+     }
+     
+     
+     /* Mobile-first styles for header and buttons */
+     .chat-title-logo {
+         display: block;
+     }
+     .chat-title-text {
+         display: none;
+     }
+     
+     #killRoomBtn .full-text,
+     #leaveBtn .full-text {
+       display: none;
+     }
+     
+     #killRoomBtn .short-text,
+     #leaveBtn .short-text {
+       display: inline;
+     }
+     
+     /* Desktop styles */
+     @media (min-width: 768px) {
+       .chat-title-logo {
+         display: none;
+       }
+       .chat-title-text {
+         display: block;
+       }
+     
+       #killRoomBtn .full-text,
+       #leaveBtn .full-text {
+         display: inline;
+       }
+     
+       #killRoomBtn .short-text,
+       #leaveBtn .short-text {
+         display: none;
+       }
+     }[]
