@@ -1,57 +1,70 @@
-
-.focus-beige:focus {
-  outline: none;
-  --tw-ring-color: #F5F5DC;
-  box-shadow: 0 0 0 2px var(--tw-ring-color);
+/* Base styles */
+#chatScreen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+#chat-header {
+  flex-shrink: 0;
+}
+#messages {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+#chat-input-container {
+  flex-shrink: 0;
 }
 
+/* Sent and Received message bubbles */
 .sent-message {
-    background-image: linear-gradient(to right, #A0522D, #5C2E00);
-    color: white;
-}
-
-#sendBtn {
-    background-image: linear-gradient(to right, #A0522D, #5C2E00);
-}
-
-#createRoomBtn {
-    background-image: linear-gradient(to right, #A0522D, #5C2E00);
-}
-
-#joinRoomBtn {
-    background-color: white;
-    color: black;
-}
-
-.sent-message-media {
-    background-image: linear-gradient(to right, #A0522D, #5C2E00);
+  background: linear-gradient(to right, #8A5A44, #6B4226);
 }
 
 .received-message {
-    background-image: linear-gradient(to right, #F5F5DC, #D2B48C);
-    color: #333;
+  background: linear-gradient(to right, #F2E8CF, #D4C8A1);
+  color: #000;
 }
 
-#approveJoinBtn {
-    background-image: linear-gradient(to right, #F5F5DC, #D2B48C);
-    color: #333;
+#sendBtn {
+    background: linear-gradient(to right, #8A5A44, #6B4226);
 }
 
-#denyJoinBtn {
-    background-image: linear-gradient(to right, #A0522D, #5C2E00);
-    color: white;
+
+/* Mobile-first styles for header and buttons */
+.chat-title-logo {
+    display: block;
+}
+.chat-title-text {
+    display: none;
 }
 
-@media (max-width: 768px) {
-    body.keyboard-open #chat-main {
-        padding-bottom: 80px;
-    }
+#killRoomBtn .full-text,
+#leaveBtn .full-text {
+  display: none;
+}
 
-    body.keyboard-open #message-input-container {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-    }
+#killRoomBtn .short-text,
+#leaveBtn .short-text {
+  display: inline;
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .chat-title-logo {
+    display: none;
+  }
+  .chat-title-text {
+    display: block;
+  }
+
+  #killRoomBtn .full-text,
+  #leaveBtn .full-text {
+    display: inline;
+  }
+
+  #killRoomBtn .short-text,
+  #leaveBtn .short-text {
+    display: none;
+  }
 }

@@ -1,3 +1,6 @@
+// This script handles the real-time chat functionality using Socket.io.
+// The message scrolling is handled by the browser's default behavior with the new flexbox layout.
+
 document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
 
