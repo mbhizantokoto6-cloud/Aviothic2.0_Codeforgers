@@ -412,6 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sendFile(fileToSend);
             fileToSend = null;
             messageInput.innerHTML = "";
+            messageInput.focus();
             return;
         }
         
@@ -426,6 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         messageInput.innerHTML = "";
+        messageInput.focus();
     };
 
     fileInput.onchange = () => {
