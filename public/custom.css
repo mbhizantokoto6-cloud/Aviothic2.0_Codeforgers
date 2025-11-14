@@ -190,8 +190,3 @@ body.chat-active {
   background-image: linear-gradient(to right, #F5F5DC, #D2B48C) !important;
   color: black !important;
 }
-
-/* Fix for mobile keyboard gap */
-body.keyboard-open #chatScreen {
-    height: 100%;
-}

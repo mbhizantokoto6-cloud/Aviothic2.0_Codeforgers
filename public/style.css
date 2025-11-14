@@ -1,3 +1,4 @@
+
 .focus-beige:focus {
   outline: none;
   --tw-ring-color: #F5F5DC;
@@ -42,9 +43,8 @@
 }
 
 @media (max-width: 768px) {
-    body.keyboard-open #chatScreen {
-        transform: translateY(-60%);
-        padding-bottom: 20px; 
+    body.keyboard-open #chat-main {
+        padding-bottom: 80px;
     }
 
     body.keyboard-open #message-input-container {
