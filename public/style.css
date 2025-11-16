@@ -1,83 +1,151 @@
-      /* Base styles */
-      #chatScreen {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        width: 100%;
-      }
-      #chat-header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        flex-shrink: 0;
-     }
-     #messages {
-       flex-grow: 1;
-       overflow-y: auto;
-     }
-     #chat-input-container {
-       flex-shrink: 0;
-     }
-     
-     /* Sent and Received message bubbles */
-     .sent-message {
-       background: linear-gradient(to right, #8A5A44, #6B4226);
-     }
-     
-     .received-message {
-       background: linear-gradient(to right, #F2E8CF, #D4C8A1);
-       color: #000;
-     }
-     
-     #sendBtn {
-         background: linear-gradient(to right, #8A5A44, #6B4226);
-     }
 
-     #createRoomBtn {
-        background: linear-gradient(to right, #8A5A44, #6B4226);
-        color: white;
-     }
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 1rem;
+}
 
-     #joinRoomBtn {
-        background-color: white;
-        color: black;
-     }
-     
-     
-     /* Mobile-first styles for header and buttons */
-     .chat-title-logo {
-         display: block;
-     }
-     .chat-title-text {
-         display: none;
-     }
-     
-     #killRoomBtn .full-text,
-     #leaveBtn .full-text {
-       display: none;
-     }
-     
-     #killRoomBtn .short-text,
-     #leaveBtn .short-text {
-       display: inline;
-     }
-     
-     /* Desktop styles */
-     @media (min-width: 768px) {
-       .chat-title-logo {
-         display: none;
-       }
-       .chat-title-text {
-         display: block;
-       }
-     
-       #killRoomBtn .full-text,
-       #leaveBtn .full-text {
-         display: inline;
-       }
-     
-       #killRoomBtn .short-text,
-       #leaveBtn .short-text {
-         display: none;
-       }
-     }[]
+#chatScreen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+#chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+}
+#messages {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+#chat-input-container {
+  flex-shrink: 0;
+}
+
+.sent-message {
+  background: linear-gradient(to right, #8A5A44, #6B4226);
+}
+
+.received-message {
+  background: linear-gradient(to right, #F2E8CF, #D4C8A1);
+  color: #000;
+}
+
+#sendBtn {
+    background: linear-gradient(to right, #8A5A44, #6B4226);
+}
+
+#createRoomBtn {
+   background: linear-gradient(to right, #8A5A44, #6B4226);
+   color: white;
+}
+
+#joinRoomBtn {
+   background-color: white;
+   color: black;
+}
+
+.chat-title-logo {
+    display: block;
+}
+.chat-title-text {
+    display: none;
+}
+
+#killRoomBtn .full-text,
+#leaveBtn .full-text {
+  display: none;
+}
+
+#killRoomBtn .short-text,
+#leaveBtn .short-text {
+  display: inline;
+}
+
+@media (min-width: 768px) {
+  .chat-title-logo {
+    display: none;
+  }
+  .chat-title-text {
+    display: block;
+  }
+
+  #killRoomBtn .full-text,
+  #leaveBtn .full-text {
+    display: inline;
+  }
+
+  #killRoomBtn .short-text,
+  #leaveBtn .short-text {
+    display: none;
+  }
+}
+
+input[type="text"], [contenteditable="true"] {
+    caret-color: white;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 10px;
+}
+
+.message.consecutive {
+  margin-top: -10px;
+}
+
+.message.consecutive.justify-start .p-3 {
+  margin-left: 60px;
+}
+
+.message.consecutive.justify-end .p-3 {
+  margin-right: 60px;
+}
+
+.message.consecutive .profile-icon,
+.message.consecutive .font-bold {
+  display: none;
+}
+
+#chat-main {
+  position: relative;
+}
+
+#previewModal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 50;
+}
+
+#closePreview {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 51;
+}
+
+.message-bubble-media {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.message-bubble-media .message-file-preview {
+    border: none;
+    border-radius: 0.5rem;
+    max-width: 250px;
+    max-height: 250px;
+}

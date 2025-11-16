@@ -59,32 +59,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayMessage(user, message) {
-    const div = document.createElement("div");
-    const messageBubble = document.createElement("div");
+        const isConsecutive = lastMessageUser === user;
     
-    const bubbleClass = user === username ? 'sent-message' : 'received-message';
-    const alignmentClass = user === username ? 'justify-end' : 'justify-start';
+        const div = document.createElement("div");
+        const messageBubble = document.createElement("div");
+    
+        const bubbleClass = user === username ? 'sent-message' : 'received-message';
+        const alignmentClass = user === username ? 'justify-end' : 'justify-start';
+    
+        div.className = `message mb-2 flex items-end ${alignmentClass}`;
+        if (isConsecutive) {
+            div.classList.add("consecutive");
+        }
 
-    div.className = `message mb-4 flex ${alignmentClass}`;
-    messageBubble.className = `p-3 rounded-lg max-w-xs ${bubbleClass}`;
-
-    const displayName = user === username ? "You" : user;
-
-    if (message.type === 'text') {
-        messageBubble.innerHTML = `<span class="font-bold">${displayName}:</span> ${message.content}`;
-    } else if (message.type === 'gif') {
-        messageBubble.innerHTML = `<span class="font-bold">${displayName}:</span><img src="${message.content}" class="mt-2 rounded-lg message-file-preview">`;
-    } else if (message.type === 'image') {
-        messageBubble.innerHTML = `<span class="font-bold">${displayName}:</span><img src="${message.content}" class="mt-2 rounded-lg message-file-preview">`;
-    } else if (message.type === 'video') {
-        messageBubble.innerHTML = `<span class="font-bold">${displayName}:</span><video src="${message.content}" class="mt-2 rounded-lg message-file-preview" controls></video>`;
+        let contentHtml = '';
+        if (message.type === 'text') {
+            messageBubble.className = `p-3 rounded-lg max-w-xs ${bubbleClass}`;
+            contentHtml = message.content;
+        } else {
+            messageBubble.className = `max-w-xs message-bubble-media`;
+            if (message.type === 'gif') {
+                contentHtml = `<img src="${message.content}" class="mt-2 rounded-lg message-file-preview">`;
+            } else if (message.type === 'image') {
+                contentHtml = `<img src="${message.content}" class="mt-2 rounded-lg message-file-preview">`;
+            } else if (message.type === 'video') {
+                contentHtml = `<video src="${message.content}" class="mt-2 rounded-lg message-file-preview" controls></video>`;
+            }
+        }
+    
+        if (!isConsecutive) {
+            const profileIcon = document.createElement("img");
+            profileIcon.src = "profile.png";
+            profileIcon.className = "profile-icon";
+            
+            const displayName = user === username ? "You" : `~${user}`;
+            messageBubble.innerHTML = message.type === 'text' ? `<span class="font-bold">${displayName}:</span> ${contentHtml}` : contentHtml;
+    
+            if (user === username) {
+                div.appendChild(messageBubble);
+                div.appendChild(profileIcon);
+            } else {
+                div.appendChild(profileIcon);
+                div.appendChild(messageBubble);
+            }
+        } else {
+            messageBubble.innerHTML = contentHtml;
+            div.appendChild(messageBubble);
+        }
+    
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+        lastMessageUser = user;
     }
-
-    div.appendChild(messageBubble);
-    messagesDiv.appendChild(div);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
+    
     function formatBytes(bytes, decimals = 2) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024;
@@ -169,11 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileType = getMimeType(file);
 
         let fileHtml;
+        let bubbleExtraClass = "";
 
-        if (fileType.startsWith('image')) {
-            fileHtml = `<img src="${file.path}" class="mt-2 rounded-lg message-file-preview">`;
-        } else if (fileType.startsWith('video')) {
-            fileHtml = `<video src="${file.path}" class="mt-2 rounded-lg message-file-preview" controls></video>`;
+        if (fileType.startsWith('image') || fileType.startsWith('video')) {
+            bubbleExtraClass = "message-bubble-media";
+            if (fileType.startsWith('image')) {
+                fileHtml = `<img src="${file.path}" class="mt-2 rounded-lg message-file-preview">`;
+            } else {
+                fileHtml = `<video src="${file.path}" class="mt-2 rounded-lg message-file-preview" controls></video>`;
+            }
         } else {
             const truncatedName = file.name.length > 15 ? file.name.substring(0, 10) + "..." + file.name.substring(file.name.length - 5) : file.name;
             const fileTypeSuffix = fileType.split('/')[1] ? fileType.split('/')[1].toUpperCase() + ' File' : 'File';
@@ -197,12 +229,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (messageDiv) {
             const bubble = messageDiv.querySelector(".p-3");
             bubble.innerHTML = fileHtml;
-            bubble.style.width = fileType.startsWith('image') || fileType.startsWith('video') ? 'auto' : '320px';
+            bubble.className = `p-3 rounded-lg max-w-xs ${bubbleClass} ${bubbleExtraClass}`;
         } else {
             const div = document.createElement("div");
             div.id = messageId;
             div.className = `message mb-4 flex ${alignmentClass}`;
-            div.innerHTML = `<div class="p-3 rounded-lg max-w-xs ${bubbleClass}" style="width: ${fileType.startsWith('image') || fileType.startsWith('video') ? 'auto' : '320px'};">${fileHtml}</div>`;
+            div.innerHTML = `<div class="p-3 rounded-lg max-w-xs ${bubbleClass} ${bubbleExtraClass}">${fileHtml}</div>`;
             messagesDiv.appendChild(div);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
@@ -228,16 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function uploadFile(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.classList.add('pasted-image-preview');
-            messageInput.appendChild(img);
-            fileToSend = file;
-        };
-        reader.readAsDataURL(file);
+        fileToSend = file;
+        messageInput.value = `Pasted file: ${file.name}. Press send to upload.`;
+        messageInput.disabled = true;
     }
+    
 
     function sendFile(file) {
         const messageId = `file-${Date.now()}`;
@@ -246,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         div.id = messageId;
 
         const messageBubble = document.createElement("div");
-        messageBubble.className = "p-3 rounded-lg max-w-xs sent-message-media text-white";
+        messageBubble.className = "p-3 rounded-lg max-w-xs sent-message text-white";
         messageBubble.style.width = '320px';
 
         const truncatedName = file.name.length > 15 ? file.name.substring(0, 10) + "..." + file.name.substring(file.name.length - 5) : file.name;
@@ -364,10 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     leaveBtn.onclick = () => {
-        socket.emit("leave-room", {
-            roomKey,
-            username
-        });
+        socket.emit("leave-room", { roomKey, username });
         chatScreen.style.display = "none";
         joinScreen.style.display = "flex";
         messagesDiv.innerHTML = "";
@@ -379,9 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     killRoomBtn.onclick = () => {
         if (isAdmin) {
-            socket.emit("kill-room", {
-                roomKey
-            });
+            socket.emit("kill-room", { roomKey });
         }
     };
 
@@ -411,24 +433,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fileToSend) {
             sendFile(fileToSend);
             fileToSend = null;
-            messageInput.innerHTML = "";
+            messageInput.value = "";
+            messageInput.disabled = false;
             messageInput.focus();
             return;
         }
         
-        const message = messageInput.innerHTML.trim();
+        const message = messageInput.value.trim();
         if (message === "") return;
-        socket.emit("chat-message", {
-            roomKey,
-            username,
-            message: {
-                type: 'text',
-                content: message
-            }
-        });
-        messageInput.innerHTML = "";
+        socket.emit("chat-message", { roomKey, username, message: { type: 'text', content: message } });
+        messageInput.value = "";
         messageInput.focus();
     };
+    
 
     fileInput.onchange = () => {
         const file = fileInput.files[0];
@@ -439,10 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     approveJoinBtn.onclick = () => {
         if (pendingJoinRequest) {
-            socket.emit("approve-join", {
-                roomKey,
-                userId: pendingJoinRequest.userId
-            });
+            socket.emit("approve-join", { roomKey, userId: pendingJoinRequest.userId });
             joinRequestModal.classList.add("hidden");
             pendingJoinRequest = null;
         }
@@ -450,10 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     denyJoinBtn.onclick = () => {
         if (pendingJoinRequest) {
-            socket.emit("deny-join", {
-                roomKey,
-                userId: pendingJoinRequest.userId
-            });
+            socket.emit("deny-join", { roomKey, userId: pendingJoinRequest.userId });
             joinRequestModal.classList.add("hidden");
             pendingJoinRequest = null;
         }
@@ -516,14 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             img.src = gif.images.fixed_height.url;
                             img.className = "cursor-pointer w-full";
                             img.onclick = () => {
-                                socket.emit("chat-message", {
-                                    roomKey,
-                                    username,
-                                    message: {
-                                        type: 'gif',
-                                        content: img.src
-                                    }
-                                });
+                                socket.emit("chat-message", { roomKey, username, message: { type: 'gif', content: img.src } });
                                 mediaPicker.style.display = "none";
                             };
                             resultsDiv.appendChild(img);
@@ -542,14 +546,14 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = emoji;
             btn.className = "m-1 text-2xl";
             btn.onclick = () => {
-                messageInput.innerHTML += emoji;
+                messageInput.value += emoji;
             };
             mediaPicker.appendChild(btn);
         });
     }
 
     function openPreview(src, type) {
-        previewModal.style.display = "flex";
+        previewModal.classList.remove('hidden');
         if (type.startsWith('image') || type === 'gif') {
             previewContent.innerHTML = `<img src="${src}">`;
         } else if (type.startsWith('video')) {
@@ -558,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     closePreview.onclick = () => {
-        previewModal.style.display = "none";
+        previewModal.classList.add('hidden');
         previewContent.innerHTML = "";
     };
 
@@ -634,40 +638,24 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on("join-request-sent", (m) => alert(m));
     socket.on("join-denied", (m) => alert(m));
 
-    socket.on("join-request", ({
-        userId,
-        username: requestingUsername
-    }) => {
+    socket.on("join-request", ({ userId, username: requestingUsername }) => {
         if (isAdmin) {
-            pendingJoinRequest = {
-                userId,
-                username: requestingUsername
-            };
+            pendingJoinRequest = { userId, username: requestingUsername };
             joinRequestUser.innerText = `${requestingUsername} wants to join the room.`;
             joinRequestModal.classList.remove("hidden");
         }
     });
 
-    socket.on("chat-history", ({
-        messages,
-        files
-    }) => {
+    socket.on("chat-history", ({ messages, files }) => {
         messagesDiv.innerHTML = "";
         lastMessageUser = null;
         messages.forEach((msg) => displayMessage(msg.username, msg.message));
         files.forEach((file) => displayFile(file.username, file.file, file.messageId));
     });
 
-    socket.on("chat-message", ({
-        username,
-        message
-    }) => displayMessage(username, message));
+    socket.on("chat-message", ({ username, message }) => displayMessage(username, message));
 
-    socket.on("file-uploaded", ({
-        username: user,
-        file,
-        messageId
-    }) => {
+    socket.on("file-uploaded", ({ username: user, file, messageId }) => {
         if (user !== username) {
             displayFile(user, file, messageId);
         }
